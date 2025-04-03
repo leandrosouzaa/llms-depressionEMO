@@ -1,0 +1,52 @@
+import gradio as gr
+
+def chatbot_response(user_input, history):
+    response = f"**Resposta:**\n{user_input}\n\n"
+    references = "**Referências:**\n- Fonte 1\n- Fonte 2\n"
+    history.append((user_input, response + references))
+    return history
+
+def reset_chat():
+    return []
+
+with gr.Blocks(css="""
+    .my-button { 
+        background-color: #1a2b9e !important; 
+        color: #ffffff !important; 
+    }
+    .my-button:hover {
+        background-color: #17278c !important;
+    }
+""", theme='white') as demo:
+    with gr.Row():
+        gr.HTML("""
+            <div style="padding: 20px; border-radius: 10px; display: flex; align-items: center; background-color: #27272a !important">
+                <img src="https://i.ibb.co/7d59tGSG/Chat-GPT-Image-2-04-2025-18-30-04.png" 
+                     style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin-right: 20px;">
+                <div>
+                    <h1>
+                        Norma - A Assistente Virtual do BV
+                    </h1>
+                    <p style="margin: 5px 0;">
+                        <strong>Norma</strong> tem o objetivo de auxiliar na busca por informações sobre INs e esclarecer dúvidas relacionadas ao BV.
+                    </p>
+                    <p style="margin: 5px 0;">
+                        <strong>Observação:</strong> Por utilizar GenAI, suas respostas podem conter falhas ou informações inconsistentes. Sempre consulte o <strong>DocSpider</strong> para maior confiança.
+                    </p>
+                    <p style="margin: 5px 0;">
+                        <strong>Última atualização de Base:</strong> 02/04/2025
+                    </p>
+                </div>
+            </div>
+        """)
+    
+    chatbot = gr.Chatbot()
+    user_input = gr.Textbox(placeholder="Digite sua pergunta...", lines=1)
+    send_button = gr.Button("Enviar", elem_classes="my-button")
+    reset_button = gr.Button("🔄 Reiniciar Conversa", elem_classes="my-button")
+    
+    send_button.click(fn=chatbot_response, inputs=[user_input, chatbot], outputs=chatbot)
+    reset_button.click(fn=reset_chat, outputs=chatbot)
+    
+if __name__ == "__main__":
+    demo.launch()
